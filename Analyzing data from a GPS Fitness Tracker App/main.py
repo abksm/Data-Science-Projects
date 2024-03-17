@@ -23,6 +23,16 @@ display(df_activities['Type'].value_counts())
 df_activities['Type'] = df_activities['Type'].str.replace('Other', 'Unicycling')
 df_activities.isnull().sum()
 
+avg_hr_run = df_activities[df_activities['Type'] == 'Running']['Average Heart Rate (bpm)'].mean()
+avg_hr_cycle = df_activities[df_activities['Type'] == 'Cycling']['Average Heart Rate (bpm)'].mean()
+df_run = df_activities[df_activities['Type'] == 'Running'].copy()
+df_walk = df_activities[df_activities['Type'] == 'Walking'].copy()
+df_cycle = df_activities[df_activities['Type'] == 'Cycling'].copy()
+df_walk['Average Heart Rate (bpm)'].fillna(110, inplace=True)
+df_run['Average Heart Rate (bpm)'].fillna(int(avg_hr_run), inplace=True)
+df_cycle['Average Heart Rate (bpm)'].fillna(int(avg_hr_cycle), inplace=True)
+df_run.isnull().sum()
+
 plt.style.use('ggplot')
 runs_subset_2013_2018 = df_activities.loc['20191231':'20130101']
 runs_subset_2013_2018.plot(subplots=True,
