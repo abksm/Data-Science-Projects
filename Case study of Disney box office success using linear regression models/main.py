@@ -14,17 +14,20 @@ gross = pd.read_csv("Datasets/disney_movies_total_gross.csv",
                     parse_dates=['release_date'])
 inflation_adjusted_gross_desc=gross.sort_values(by='inflation_adjusted_gross',
                                                 ascending=False)
-print("The top 10 movies by box office earnings are : \n",inflation_adjusted_gross_desc.head(10))
+print("The top 10 movies by box office earnings are :")
+inflation_adjusted_gross_desc.head(10)
 
-gross['release_year'] = pd.DatetimeIndex(gross['release_date']).year
-group=gross.groupby('release_year').mean()
-genre_yearly=gross.groupby(['genre','release_year']).mean()
-genre_yearly.reset_index()
-sns.relplot(x='release_year', y='inflation_adjusted_gross', kind='line', hue='genre', data=genre_yearly)
-relplot.fig.suptitle('Genre Popularity Trend')
+gross['release_year'] = pd.DatetimeIndex(gross["release_date"]).year
+gross2=gross[['genre','release_year','total_gross','inflation_adjusted_gross']]
+group = gross2.groupby(['genre','release_year']).mean()
+genre_yearly = group.reset_index()
+display(genre_yearly.head(10))
 
-genre_dummies=pd.get_dummies(data=gross['genre'], drop_first=True)
-print("The dummies table used for the linear regression model is : \n",genre_dummies.head())
+plot = sns.relplot(x='release_year', y='inflation_adjusted_gross', kind='line', hue='genre', data=genre_yearly)
+plot.fig.suptitle('Genre Popularity Trend')
+
+genre_dummies=pd.get_dummies(data=gross['genre'], drop_first=True).astype(int);
+genre_dummies.head()
 
 regr=LinearRegression()
 regr.fit(genre_dummies, gross["inflation_adjusted_gross"])
@@ -44,6 +47,7 @@ for i in range(size) :
     regr=LinearRegression().fit(bs_dummies, bs_gross)
     bs_action_reps[i]=regr.intercept_
     bs_adventure_reps[i]=regr.coef_[[0]][0]
+
 confidence_interval_action=np.percentile(bs_action_reps, [2.5, 97.5])
 confidence_interval_adventure=np.percentile(bs_adventure_reps, [2.5, 97.5])
 print("The confidence interval for the intercept is : \n",confidence_interval_action)
