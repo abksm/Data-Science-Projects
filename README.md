@@ -1,4 +1,4 @@
-# Master of Data Science Application
+# Data Science Portfolio
 
 ![image](https://github.com/abksm/Data-Science-Projects/assets/149950882/0e78eda9-3a8b-4035-8be9-566100c033e9)
 
